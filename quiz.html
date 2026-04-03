@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Quiz Nature Martinique — Panda Village 🐼</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐼</text></svg>">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#f0f7f0;color:#333;min-height:100dvh}
+.header{background:linear-gradient(135deg,#2E7D32,#4CAF50);color:#fff;text-align:center;padding:18px 16px}
+.header-icons{font-size:1.8em;margin-bottom:4px}.header h1{font-size:1.4em;margin-bottom:2px}.header p{font-size:.85em;opacity:.9}
+.container{max-width:500px;margin:0 auto;padding:16px}
+.screen{display:none}.screen.active{display:block}
+.welcome{text-align:center;padding:24px 16px}
+.welcome-icon{font-size:3em;margin-bottom:10px}
+.welcome h2{color:#2E7D32;font-size:1.3em;margin-bottom:12px}
+.welcome p{margin-bottom:8px;color:#555;line-height:1.5;font-size:.95em}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-weight:700;font-size:.9em;margin-bottom:4px;color:#2E7D32}
+.form-group input{width:100%;padding:12px 14px;border:2px solid #c8e6c9;border-radius:10px;font-size:1em;font-family:inherit}
+.form-group input:focus{outline:none;border-color:#4CAF50}
+.age-options{display:flex;flex-wrap:wrap;gap:8px}
+.age-chip{padding:8px 14px;border:2px solid #c8e6c9;border-radius:20px;font-size:.9em;cursor:pointer;background:#fff;transition:all .15s;user-select:none}
+.age-chip.selected{background:#E8F5E9;border-color:#4CAF50;color:#2E7D32;font-weight:700}
+.age-chip:active{transform:scale(.95)}
+.rgpd-row{display:flex;align-items:flex-start;gap:10px;margin-top:16px;padding:12px;background:#f5f5f5;border-radius:10px}
+.rgpd-row input[type=checkbox]{margin-top:3px;width:20px;height:20px;flex-shrink:0;accent-color:#2E7D32}
+.rgpd-row label{font-size:.8em;color:#555;line-height:1.4;cursor:pointer}
+.btn-start{display:block;width:100%;background:#2E7D32;color:#fff;border:none;padding:16px;border-radius:30px;font-size:1.2em;font-weight:700;cursor:pointer;margin-top:20px;box-shadow:0 4px 12px rgba(46,125,50,.3)}
+.btn-start:active{transform:scale(.97)}
+.form-error{color:#E53935;font-size:.85em;margin-top:8px;display:none;text-align:center}
+.form-error.show{display:block}
+.question-card{background:#fff;border-radius:16px;padding:24px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.q-progress{text-align:center;font-size:.85em;color:#888;margin-bottom:8px}
+.progress-bar{height:6px;background:#e0e0e0;border-radius:3px;margin-bottom:16px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#4CAF50,#2E7D32);border-radius:3px;transition:width .3s}
+.q-animal{display:inline-block;background:#E8F5E9;color:#2E7D32;padding:4px 12px;border-radius:12px;font-size:.8em;font-weight:700;margin-bottom:12px}
+.q-text{font-size:1.1em;font-weight:600;line-height:1.4;margin-bottom:20px;color:#222}
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice-btn{display:flex;align-items:center;background:#f8f8f8;border:2px solid #e0e0e0;border-radius:12px;padding:14px 16px;cursor:pointer;font-size:1em;text-align:left;transition:all .2s;line-height:1.3}
+.choice-btn:active{transform:scale(.98)}
+.choice-letter{display:flex;align-items:center;justify-content:center;min-width:32px;height:32px;background:#2E7D32;color:#fff;border-radius:50%;font-weight:700;margin-right:12px;font-size:.9em;flex-shrink:0}
+.choice-btn.correct{background:#E8F5E9;border-color:#4CAF50}.choice-btn.correct .choice-letter{background:#4CAF50}
+.choice-btn.wrong{background:#FFEBEE;border-color:#E53935}.choice-btn.wrong .choice-letter{background:#E53935}
+.choice-btn.disabled{pointer-events:none;opacity:.6}.choice-btn.correct.disabled{opacity:1}
+.feedback{margin-top:16px;padding:12px 16px;border-radius:10px;font-size:.95em;line-height:1.4;display:none}
+.feedback.show{display:block}.feedback.correct{background:#E8F5E9;color:#2E7D32}.feedback.wrong{background:#FFF3E0;color:#E65100}
+.btn-next{display:none;width:100%;background:#2E7D32;color:#fff;border:none;padding:14px;border-radius:12px;font-size:1.1em;font-weight:700;cursor:pointer;margin-top:16px}
+.btn-next.show{display:block}.btn-next:active{transform:scale(.98)}
+.tour-badge{display:inline-block;background:linear-gradient(135deg,#FF8F00,#F57C00);color:#fff;padding:3px 10px;border-radius:10px;font-size:.75em;font-weight:700;margin-bottom:8px}
+.score-card{text-align:center;background:#fff;border-radius:16px;padding:30px 20px;box-shadow:0 2px 12px rgba(0,0,0,.1)}
+.score-emoji{font-size:3em;margin-bottom:8px}
+.score-number{font-size:2.5em;font-weight:700;color:#2E7D32}
+.score-label{color:#666;margin-top:4px;font-size:1em}
+.score-msg{margin-top:14px;font-size:1em;color:#444;line-height:1.5;padding:0 10px}
+.btn-action{display:inline-block;color:#fff;border:none;padding:14px 36px;border-radius:30px;font-size:1.05em;font-weight:700;cursor:pointer;margin-top:12px;box-shadow:0 3px 10px rgba(0,0,0,.15);text-decoration:none}
+.btn-action:active{transform:scale(.98)}
+.btn-expert{background:linear-gradient(135deg,#FF8F00,#F57C00)}
+.btn-tombola{background:linear-gradient(135deg,#2E7D32,#388E3C);margin-top:10px}
+.actions{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:20px}
+.separator{color:#999;font-size:.85em;margin:4px 0}
+.panda-promo{margin-top:24px;padding:16px;background:#E8F5E9;border-radius:12px;font-size:.9em;color:#2E7D32;line-height:1.5}
+.panda-promo a{color:#2E7D32;font-weight:700}
+.already-played{text-align:center;padding:40px 20px}
+.already-played .emoji{font-size:3em;margin-bottom:12px}
+.already-played h2{color:#2E7D32;margin-bottom:12px}
+.already-played p{color:#555;line-height:1.5;font-size:.95em;margin-bottom:8px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="header"><div class="header-icons">🐼 🏆</div><h1>LE SAVAIS-TU ?</h1><p>Quiz Nature Martinique — Panda Village</p></div>
+<div class="container">
+
+<div id="screen-blocked" class="screen">
+<div class="already-played">
+<div class="emoji">🐼✅</div>
+<h2>Tu as déjà participé !</h2>
+<p>Merci pour ta participation au Quiz Panda Village.</p>
+<p>🎉 <strong>Tombola le Lundi de Pâques !</strong><br>Résultats publiés sur Instagram</p>
+<p style="margin-top:16px"><a href="https://instagram.com/pandattitude972" target="_blank" class="btn-action btn-tombola">📸 @pandattitude972</a></p>
+<div class="panda-promo">🐼 Découvre <strong>Panda Zen</strong> — ton compagnon bien-être !<br><a href="https://panda-zen.vercel.app" target="_blank">panda-zen.vercel.app</a></div>
+</div></div>
+
+<div id="screen-welcome" class="screen active">
+<div class="welcome">
+<div class="welcome-icon">🐼🏆</div>
+<h2>Quiz Nature Martinique</h2>
+<p>16 questions sur la faune de Martinique !</p>
+<p><strong>Teste tes connaissances en famille !</strong></p>
+<p style="font-size:.85em;color:#888;margin-top:4px">🎉 Participe à la tombola du Lundi de Pâques !</p>
+</div>
+<div class="form-group"><label>Prénom *</label><input type="text" id="f-prenom" placeholder="Votre prénom" autocomplete="given-name"></div>
+<div class="form-group"><label>Nom *</label><input type="text" id="f-nom" placeholder="Votre nom" autocomplete="family-name"></div>
+<div class="form-group"><label>Email *</label><input type="email" id="f-email" placeholder="votre@email.com" autocomplete="email"></div>
+<div class="form-group"><label>Téléphone</label><input type="tel" id="f-tel" placeholder="0696 XX XX XX" autocomplete="tel"></div>
+<div class="form-group">
+<label>Tranches d'âge (plusieurs choix possibles)</label>
+<div class="age-options">
+<div class="age-chip" onclick="toggleAge(this)">1,5 – 4 ans</div>
+<div class="age-chip" onclick="toggleAge(this)">5 – 10 ans</div>
+<div class="age-chip" onclick="toggleAge(this)">11 – 17 ans</div>
+<div class="age-chip" onclick="toggleAge(this)">18+ ans</div>
+</div></div>
+<div class="rgpd-row">
+<input type="checkbox" id="f-rgpd">
+<label for="f-rgpd">J'accepte que mes données soient utilisées pour le tirage au sort et l'envoi d'informations Pandattitude. Responsable : SARL La Tribe Corp — secretariat@pandattitude.com. Données conservées 12 mois. Droit de suppression sur simple demande.</label>
+</div>
+<div class="form-error" id="form-error"></div>
+<button class="btn-start" onclick="validateAndStart()">C'est parti ! 🚀</button>
+</div>
+
+<div id="screen-quiz" class="screen">
+<div class="question-card">
+<div id="tour-badge" class="tour-badge hidden"></div>
+<div class="q-progress" id="progress-text"></div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+<div class="q-animal" id="q-animal"></div>
+<div class="q-text" id="q-text"></div>
+<div class="choices" id="choices"></div>
+<div class="feedback" id="feedback"></div>
+<button class="btn-next" id="btn-next" onclick="nextQuestion()">Question suivante →</button>
+</div></div>
+
+<div id="screen-result" class="screen">
+<div class="score-card">
+<div class="score-emoji" id="score-emoji"></div>
+<div class="score-number" id="score-number"></div>
+<div class="score-label" id="score-label"></div>
+<div class="score-msg" id="score-msg"></div>
+<div class="actions" id="actions"></div>
+<div class="panda-promo">🐼 Découvre <strong>Panda Zen</strong> — ton compagnon bien-être !<br><a href="https://panda-zen.vercel.app" target="_blank">panda-zen.vercel.app</a><br><br>📸 <a href="https://instagram.com/pandattitude972" target="_blank">@pandattitude972</a></div>
+</div></div>
+
+</div>
+<script>
+var FORM_BASE='https://docs.google.com/forms/d/e/1FAIpQLScHi9MYTzJdUWI8bu8HBLs_ELGcYtLGgdjCpK6cqQR3thQtaw/viewform?usp=pp_url';
+var E_PRENOM='entry.383695428';
+var E_NOM='entry.1166762692';
+var E_EMAIL='entry.1757122388';
+var SK='panda_quiz_2026';
+
+var tour1=[
+{num:"Q1",animal:"COLIBRI",q:"Le colibri est le seul oiseau au monde capable de\u2026",choices:["Voler en arrière","Plonger sous l'eau","Voler sans battre des ailes"],correct:0,info:"Le colibri peut voler en arrière, sur place, et même à l'envers !"},
+{num:"Q2",animal:"ANOLI",q:"L'anoli de Martinique change de couleur. Pourquoi ?",choices:["Pour se camoufler des prédateurs","Selon ce qu'il mange","Selon son humeur et la température"],correct:2,info:"Contrairement au caméléon, l'anoli change selon son stress et sa température."},
+{num:"Q3",animal:"IGUANE",q:"L'iguane des Petites Antilles est menacé en Martinique. Par quoi ?",choices:["Les chats sauvages","L'iguane vert invasif qui le remplace","La pollution des rivières"],correct:1,info:"L'iguane vert introduit se reproduit plus vite et hybride avec l'espèce locale."},
+{num:"Q4",animal:"TORTUE LUTH",q:"La tortue luth est le plus grand reptile marin. Combien peut-elle peser ?",choices:["150 kg","500 kg","Plus de 900 kg"],correct:2,info:"Elle peut dépasser 900 kg et mesurer 2 mètres !"},
+{num:"Q5",animal:"COULEUVRE COURESSE",q:"La couresse de Martinique est un serpent rare. Qu'a-t-elle de particulier ?",choices:["Elle est venimeuse mais timide","Elle est totalement inoffensive et presque éteinte","Elle ne sort que pendant l'hivernage"],correct:1,info:"La couresse est inoffensive et parmi les serpents les plus menacés au monde."},
+{num:"Q6",animal:"POISSON-PERROQUET",q:"Le poisson-perroquet a un rôle vital pour les plages. Lequel ?",choices:["Il mange les méduses","Il nettoie l'eau de mer","Il fabrique du sable en broyant le corail"],correct:2,info:"Un seul poisson-perroquet produit jusqu'à 300 kg de sable blanc par an !"},
+{num:"Q7",animal:"AGOUTI",q:"L'agouti joue un rôle essentiel pour la forêt. Lequel ?",choices:["Il enterre des graines qu'il oublie, faisant pousser de nouveaux arbres","Il creuse des terriers qui aèrent le sol","Il mange les plantes invasives"],correct:0,info:"L'agouti est un jardinier involontaire : il cache des graines et en oublie beaucoup !"},
+{num:"Q8",animal:"MYGALE MATOUTOU",q:"La mygale matoutou est connue pour ses couleurs. Lesquelles ?",choices:["Noire et jaune comme une guêpe","Bleue, orange et noire","Entièrement blanche"],correct:1,info:"La Caribena versicolor arbore du bleu métallique, de l'orange et du noir."},
+{num:"Q9",animal:"CHAUVE-SOURIS",q:"Certaines chauves-souris jouent un rôle essentiel pour les fruits. Lequel ?",choices:["Elles gardent les vergers la nuit","Elles pollinisent les fleurs et dispersent les graines","Elles mangent les insectes nuisibles"],correct:1,info:"Sans elles, beaucoup d'arbres fruitiers tropicaux ne se reproduiraient pas."},
+{num:"Q10",animal:"MURÈNE",q:"La murène verte des Caraïbes a une particularité étonnante. Laquelle ?",choices:["Elle peut survivre 2h hors de l'eau","Elle a deux mâchoires : une dans la bouche et une dans la gorge","Elle est jaune — c'est le mucus qui la rend verte"],correct:1,info:"Comme dans Alien ! Ses mâchoires pharyngéennes agrippent la proie."},
+{num:"Q11",animal:"POISSON-LION",q:"Le poisson-lion est un problème en Martinique. Pourquoi ?",choices:["Espèce invasive sans prédateur local","Il attaque les baigneurs","Il mange tous les coraux"],correct:0,info:"Originaire du Pacifique, il dévore les poissons locaux. On encourage sa dégustation !"},
+{num:"Q12",animal:"MOUSTIQUE",q:"Seul un type de moustique pique les humains. Lequel ?",choices:["Le mâle, pour se nourrir","Les deux, selon la saison","La femelle, pour ses œufs"],correct:2,info:"La femelle a besoin de protéines du sang pour ses œufs. Le mâle boit du nectar."},
+{num:"Q13",animal:"MANGOUSTE",q:"Quel animal a été introduit pour chasser les rats en Martinique ?",choices:["Le chat","Le faucon","La mangouste"],correct:2,info:"La mangouste a surtout décimé les oiseaux au lieu des rats !"},
+{num:"Q14",animal:"PHASME",q:"Le phasme est le champion du camouflage. En Martinique il ressemble à\u2026",choices:["Une brindille ou une branche","Une feuille morte","Une fleur d'hibiscus"],correct:0,info:"Il imite parfaitement les branches, jusqu'aux nœuds et à l'écorce."},
+{num:"Q15",animal:"TOURTERELLE",q:"La tourterelle à queue carrée est typique des Antilles. Qu'est-ce qui la distingue ?",choices:["Elle ne migre jamais","Sa queue est coupée droite au lieu d'être arrondie","Elle chante uniquement à l'aube"],correct:1,info:"Seule tourterelle au monde dont la queue forme un bord parfaitement droit."},
+{num:"Q16",animal:"FER-DE-LANCE",q:"Le trigonocéphale est le serpent le plus redouté de Martinique. Son venin agit sur\u2026",choices:["Le système nerveux (paralysie)","Les os (décalcification)","Le sang (hémorragies et nécrose)"],correct:2,info:"Son venin hémotoxique provoque des hémorragies. Il est devenu très rare."}
+];
+
+var tour2=[
+{num:"E1",animal:"CHAUVE-SOURIS",q:"Comment la chauve-souris s'oriente-t-elle dans le noir total ?",choices:["Par la vue infrarouge","Par écholocation (sonar ultrasonique)","Par l'odorat"],correct:1,info:"Elle émet des ultrasons et écoute l'écho pour voir son environnement."},
+{num:"E2",animal:"POISSON-PERROQUET",q:"Le poisson-perroquet dort de manière très particulière. Comment ?",choices:["Il s'enterre dans le sable","Il s'enveloppe dans un cocon de mucus","Il dort les yeux ouverts accroché au corail"],correct:1,info:"Ce cocon le protège des parasites et masque son odeur aux prédateurs."},
+{num:"E3",animal:"MANGOUSTE",q:"La mangouste a causé un problème inattendu en Martinique. Lequel ?",choices:["Elle a décimé les oiseaux nichant au sol","Elle a transmis la rage aux chiens","Elle a détruit les cultures de canne"],correct:0,info:"Les rats sont nocturnes, la mangouste diurne : elles ne se croisent presque jamais !"},
+{num:"E4",animal:"CORAIL",q:"Le corail des Caraïbes blanchit. Quelle en est la cause principale ?",choices:["La pollution chimique","Le réchauffement de l'eau","Les bateaux de croisière"],correct:1,info:"Au-delà de 29°C, le corail expulse ses algues symbiotiques et meurt."},
+{num:"E5",animal:"TORTUE IMBRIQUÉE",q:"La tortue imbriquée (karet) pond en Martinique. Combien d'œufs par nid ?",choices:["10 à 20","60 à 80","150 à 200"],correct:2,info:"150 à 200 œufs mais seul 1 sur 1000 atteindra l'âge adulte."},
+{num:"E6",animal:"FER-DE-LANCE",q:"Le trigonocéphale détecte ses proies dans le noir. Comment ?",choices:["Par les vibrations du sol","Par des fossettes thermosensibles captant la chaleur","Par un radar dans ses écailles"],correct:1,info:"Ses fossettes détectent des différences de 0.003°C !"},
+{num:"E7",animal:"IGUANE",q:"L'iguane des Petites Antilles peut rester sous l'eau sans respirer pendant\u2026",choices:["2 minutes","30 minutes","2 heures"],correct:1,info:"Il plonge pour fuir les prédateurs et reste immobile 30 minutes sous l'eau."},
+{num:"E8",animal:"BIODIVERSITÉ",q:"En Martinique, quel pourcentage des reptiles est menacé de disparition ?",choices:["Environ 10%","Environ 30%","Plus de 50%"],correct:2,info:"Plus de la moitié des reptiles martiniquais sont menacés par les espèces invasives."}
+];
+
+var userData={},cTour=1,cQ=[],cur=0,sc=0,tSc=0,ans=false;
+
+function chk(){try{if(localStorage.getItem(SK)){show('screen-blocked');return true}}catch(e){}return false}
+function mark(){try{localStorage.setItem(SK,JSON.stringify({d:new Date().toISOString(),n:userData.nom,p:userData.prenom}))}catch(e){}}
+function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function toggleAge(el){el.classList.toggle('selected')}
+
+function formURL(){
+  var ages=[];document.querySelectorAll('.age-chip.selected').forEach(function(c){ages.push(c.textContent)});
+  var pv=userData.prenom;
+  if(userData.tel)pv+=' | Tel: '+userData.tel;
+  if(ages.length)pv+=' | Ages: '+ages.join(', ');
+  pv+=' | QUIZ EXPRESS (Score: '+tSc+')';
+  return FORM_BASE+'&'+E_PRENOM+'='+encodeURIComponent(pv)+'&'+E_NOM+'='+encodeURIComponent(userData.nom)+'&'+E_EMAIL+'='+encodeURIComponent(userData.email);
+}
+
+function validateAndStart(){
+  var nom=document.getElementById('f-nom').value.trim(),prenom=document.getElementById('f-prenom').value.trim(),email=document.getElementById('f-email').value.trim(),tel=document.getElementById('f-tel').value.trim(),rgpd=document.getElementById('f-rgpd').checked,err=document.getElementById('form-error');
+  if(!nom||!prenom||!email){err.textContent='Merci de remplir les champs obligatoires (*)';err.classList.add('show');return}
+  if(!rgpd){err.textContent="Merci d'accepter le consentement RGPD pour participer";err.classList.add('show');return}
+  err.classList.remove('show');
+  userData={nom:nom,prenom:prenom,email:email,tel:tel};
+  go(1);
+}
+
+function go(t){cTour=t;cQ=t===1?tour1:tour2;cur=0;sc=0;ans=false;show('screen-quiz');var b=document.getElementById('tour-badge');if(t===2){b.textContent='\uD83C\uDFC6 TOUR EXPERT';b.classList.remove('hidden')}else b.classList.add('hidden');sq()}
+
+function sq(){ans=false;var q=cQ[cur],n=cQ.length;document.getElementById('progress-text').textContent='Question '+(cur+1)+' / '+n;document.getElementById('progress-fill').style.width=(cur/n*100)+'%';document.getElementById('q-animal').textContent=q.animal;document.getElementById('q-text').textContent=q.q;var cd=document.getElementById('choices');cd.innerHTML='';['A','B','C'].forEach(function(L,i){var btn=document.createElement('button');btn.className='choice-btn';btn.innerHTML='<span class="choice-letter">'+L+'</span><span>'+q.choices[i]+'</span>';btn.onclick=function(){sa(i)};cd.appendChild(btn)});document.getElementById('feedback').className='feedback';document.getElementById('btn-next').classList.remove('show')}
+
+function sa(idx){if(ans)return;ans=true;var q=cQ[cur],btns=document.querySelectorAll('.choice-btn'),fb=document.getElementById('feedback');btns.forEach(function(b,i){b.classList.add('disabled');if(i===q.correct)b.classList.add('correct');if(i===idx&&idx!==q.correct)b.classList.add('wrong')});if(idx===q.correct){sc++;fb.className='feedback correct show';fb.textContent='\u2705 '+q.info}else{fb.className='feedback wrong show';fb.textContent='\u274c '+q.info}var nb=document.getElementById('btn-next');nb.textContent=cur<cQ.length-1?'Question suivante \u2192':'Voir mon score !';nb.classList.add('show')}
+
+function nextQuestion(){cur++;if(cur>=cQ.length)sr();else sq()}
+
+function sr(){show('screen-result');tSc+=sc;document.getElementById('score-number').textContent=sc+' / '+cQ.length;var em,msg,act=document.getElementById('actions'),fu=formURL();
+if(cTour===1){document.getElementById('score-label').textContent='bonnes réponses — Tour 1';mark();
+if(sc>=13){em='\uD83C\uDFC6';msg='Impressionnant ! Prêt pour le Tour Expert ?'}else if(sc>=9){em='\uD83C\uDF1F';msg='Beau score ! Tente le Tour Expert !'}else if(sc>=5){em='\uD83C\uDF3F';msg='Pas mal ! La nature de Martinique a encore des secrets.'}else{em='\uD83D\uDC3C';msg='Continue à explorer la faune martiniquaise !'}
+act.innerHTML='<a class="btn-action btn-expert" onclick="go(2)">\uD83C\uDFC6 Tour Expert (8 questions bonus)</a><span class="separator">ou</span><a class="btn-action btn-tombola" href="'+fu+'" target="_blank">\uD83C\uDF89 Valider ma participation à la tombola</a><p style="font-size:.85em;color:#888;margin-top:10px">Tombola le Lundi de Pâques !<br>Résultats sur <a href="https://instagram.com/pandattitude972" target="_blank" style="color:#2E7D32;font-weight:700">@pandattitude972</a></p>'}
+else{document.getElementById('score-label').textContent='bonnes réponses — Tour Expert';
+if(sc>=7){em='\uD83C\uDFC6\uD83C\uDFC6';msg='Véritable expert de la faune martiniquaise !'}else if(sc>=4){em='\uD83C\uDFC6';msg='Très beau niveau Expert !'}else{em='\uD83C\uDF1F';msg='Le Tour Expert est redoutable, bravo !'}
+act.innerHTML='<p style="font-size:1.1em;color:#2E7D32;font-weight:700;margin-bottom:8px">Score total : '+tSc+' / 24</p><a class="btn-action btn-tombola" href="'+fu+'" target="_blank">\uD83C\uDF89 Valider ma participation à la tombola</a><p style="font-size:.85em;color:#888;margin-top:10px">Tombola le Lundi de Pâques !<br>Résultats sur <a href="https://instagram.com/pandattitude972" target="_blank" style="color:#2E7D32;font-weight:700">@pandattitude972</a></p>'}
+document.getElementById('score-emoji').textContent=em;document.getElementById('score-msg').textContent=msg}
+
+chk();
+</script>
+</body>
+</html>
